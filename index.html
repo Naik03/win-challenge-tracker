@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bruchchallange Tracker</title>
+  <style>
+    html, body {
+      height: auto;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e0f7fa, #e1bee7);
+      text-align: center;
+      animation: fadeIn 1s ease-in;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    body {
+      padding: 40px;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes sparkle {
+      0% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 1; transform: scale(1.5); }
+      100% { opacity: 0; transform: scale(0); }
+    }
+
+    .sparkle {
+      position: absolute;
+      font-size: 24px;
+      animation: sparkle 1s ease-out;
+      pointer-events: none;
+    }
+
+    h1 {
+      font-size: 48px;
+      color: #4a148c;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    #score {
+      font-size: 64px;
+      margin: 20px 0;
+      color: #00796b;
+      transition: transform 0.2s;
+    }
+
+    button {
+      font-size: 24px;
+      padding: 15px 30px;
+      margin: 15px;
+      border: none;
+      border-radius: 10px;
+      background-color: #8e24aa;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background-color: #6a1b9a;
+      transform: scale(1.05);
+    }
+
+    #progressBar {
+      margin-top: 40px;
+      height: 40px;
+      width: 80%;
+      background-color: #cfd8dc;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #progressFill {
+      height: 100%;
+      width: 0%;
+      background-color: #00796b;
+      text-align: center;
+      color: white;
+      line-height: 40px;
+      font-weight: bold;
+    }
+
+    .ruleblock {
+      margin-top: 60px;
+      background-color: rgba(255,255,255,0.85);
+      border-radius: 10px;
+      padding: 20px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .ruleblock h2 {
+      font-size: 28px;
+      color: #4a148c;
+      margin-bottom: 10px;
+    }
+    .ruleblock h3 {
+      font-size: 22px;
+      margin-top: 20px;
+      color: #00796b;
+    }
+    .ruleblock p {
+      font-size: 18px;
+      margin: 5px 0;
+    }
+
+    .milestones {
+      margin-top: 40px;
+      background: #fff3e0;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .milestones h2 {
+      color: #ef6c00;
+    }
+    .milestone-item {
+      font-size: 18px;
+      margin: 8px 0;
+    }
+    .milestone-item input {
+      transform: scale(1.5);
+      margin-right: 12px;
+    }
+
+
+
+    @media (max-width: 600px) {
+      button {
+        font-size: 20px;
+        padding: 10px 20px;
+      }
+      #score {
+        font-size: 48px;
+      }
+      h1 {
+        font-size: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Win Challenge Tracker</h1>
+  <div id="score">0 / 500</div>
+  <button id="addBtn">+1 Punkt</button>
+  <button onclick="removePoint()">-1 Punkt</button>
+  <button onclick="reset()">Zurücksetzen</button>
+
+  <div id="progressBar">
+    <div id="progressFill">0%</div>
+  </div>
+
+  <div class="milestones">
+    <h2>🏅 Besondere Erfolge abhaken</h2>
+    <label class="milestone-item">Immortal 1+ erreicht (Valorant) → +25
+      <input type="checkbox" class="milestone" data-points="25">
+      <input type="checkbox" class="milestone" data-points="25">
+    </label><br>
+    <label class="milestone-item">Master erreicht (Apex) → +25
+      <input type="checkbox" class="milestone" data-points="25">
+      <input type="checkbox" class="milestone" data-points="25">
+    </label><br>
+    <label class="milestone-item">Global Elite erreicht (CS Wingman) → +25
+      <input type="checkbox" class="milestone" data-points="25">
+      <input type="checkbox" class="milestone" data-points="25">
+    </label><br>
+    <label class="milestone-item">Unreal erreicht (Fortnite) → +25
+      <input type="checkbox" class="milestone" data-points="25">
+      <input type="checkbox" class="milestone" data-points="25">
+    </label><br>
+    <label class="milestone-item">Enderdrache besiegt (Minecraft Hardcore) → +35
+      <input type="checkbox" class="milestone" data-points="35">
+    </label><br>
+    <label class="milestone-item">Wither besiegt (Minecraft Hardcore) → +15
+      <input type="checkbox" class="milestone" data-points="15">
+    </label><br>
+
+
+    <h2>🎉 Besondere Ereignisse</h2>
+  <label class="milestone-item">🤬 Gegner oder Mate Voice/Chatbanned bekommen → +3
+    <input type="checkbox" class="milestone" data-points="3">
+  </label><br>
+  <label class="milestone-item">noch offen → +5
+    <input type="checkbox" class="milestone" data-points="5">
+  </label><br>
+  <label class="milestone-item">noch offen→ +2
+    <input type="checkbox" class="milestone" data-points="2">
+  </label><br>
+  <label class="milestone-item">noch offen→ +3
+    <input type="checkbox" class="milestone" data-points="3">
+  </label><br>
+  </div>
+
+  <div class="ruleblock">
+    <h2>🎮 Spielbasierte Punktevergabe</h2>
+    <h3>Valorant</h3>
+    <p><strong>+3 Punkte</strong> pro Division-Aufstieg, <strong>-2</strong> bei Abstieg. <strong>+25</strong> für Immortal 1+</p>
+    <h3>Apex Legends</h3>
+    <p><strong>+3 Punkte</strong> pro Division-Aufstieg, <strong>-2</strong> bei Abstieg. <strong>+25</strong> bei Master</p>
+    <h3>CS:GO Wingman</h3>
+    <p><strong>+2 Punkte</strong> pro Rangaufstieg, <strong>-1</strong> bei Abstieg. <strong>+25</strong> bei Global Elite</p>
+    <h3>Fortnite</h3>
+    <p><strong>+3 Punkte</strong> pro Division-Aufstieg, <strong>-2</strong> bei Abstieg. <strong>+25</strong> bei Unreal</p>
+    <h3>Peak</h3>
+    <p><strong>+15 Punkte</strong> bei Spielabschluss (z. B. Gipfel erreicht)</p>
+    <h3>Gartenarbeit</h3>
+    <p><strong>+1 Punkt</strong> pro gegossener Pflanze</p>
+    <h3>Minecraft (Hardcore)</h3>
+    <p><strong>+35 Punkte</strong> für Enderdrache, <strong>+15 Punkte</strong> für Wither</p>
+    <h3>Chess.com</h3>
+    <p><strong>+2 Punkte</strong> pro gewonnenem Online-Spiel (Blitz, Rapid oder Bullet)</p>
+  </div>
+
+  <audio id="addSound" preload="auto" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+  <audio id="removeSound" preload="auto" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg"></audio>
+  <audio id="resetSound" preload="auto" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+  <audio id="goalSound" preload="auto" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg"></audio>
+  <audio id="milestoneSound" preload="auto" src="https://cdn.pixabay.com/audio/2023/03/21/audio_1c8e00b909.mp3"></audio>
+
+  <script>
+    let score = localStorage.getItem('winChallengeScore') ? parseInt(localStorage.getItem('winChallengeScore')) : 0;
+    const max = 500;
+    const scoreDisplay = document.getElementById('score');
+    const progressFill = document.getElementById('progressFill');
+    const addSound = document.getElementById('addSound');
+    const removeSound = document.getElementById('removeSound');
+    const resetSound = document.getElementById('resetSound');
+    const goalSound = document.getElementById('goalSound');
+    const milestoneSound = document.getElementById('milestoneSound');
+
+    function updateDisplay() {
+      scoreDisplay.textContent = `${score} / ${max}`;
+      const percent = Math.round((score / max) * 100);
+      progressFill.style.width = percent + '%';
+      progressFill.textContent = percent + '%';
+      scoreDisplay.style.animation = 'pop 0.4s ease';
+      setTimeout(() => scoreDisplay.style.animation = '', 400);
+      localStorage.setItem('winChallengeScore', score);
+    }
+
+    function addSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.textContent = '✨';
+      sparkle.className = 'sparkle';
+      sparkle.style.left = `${x}px`;
+      sparkle.style.top = `${y}px`;
+      document.body.appendChild(sparkle);
+      setTimeout(() => sparkle.remove(), 1000);
+    }
+
+    function addPoint(value = 1, event = null) {
+      if (score + value <= max) {
+        score += value;
+        updateDisplay();
+        addSound.currentTime = 0;
+        addSound.play();
+        if (event) addSparkle(event.clientX, event.clientY);
+        if (score === max) {
+          goalSound.currentTime = 0;
+          goalSound.play();
+        }
+      }
+    }
+
+    function removePoint() {
+      if (score > 0) {
+        score--;
+        updateDisplay();
+        removeSound.currentTime = 0;
+        removeSound.play();
+      }
+    }
+
+    function reset() {
+      if (confirm("Bist du sicher, dass du alles zurücksetzen willst?")) {
+        score = 0;
+        updateDisplay();
+        resetSound.currentTime = 0;
+        resetSound.play();
+      }
+    }
+
+    document.getElementById("addBtn").addEventListener("click", function(e) {
+      addPoint(1, e);
+    });
+
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        addPoint();
+      }
+    });
+
+    document.querySelectorAll('.milestone').forEach(input => {
+      input.addEventListener('change', (e) => {
+        const value = parseInt(input.dataset.points);
+        if (input.checked) {
+          addPoint(value, e);
+          milestoneSound.currentTime = 0;
+          milestoneSound.play();
+        } else {
+          score = Math.max(0, score - value);
+          updateDisplay();
+        }
+      });
+    });
+
+    updateDisplay();
+  </script>
+
+
+<!-- 🎡 Button oben rechts -->
+<button id="spinButton" style="position: fixed; top: 20px; right: 20px; z-index: 9999; background-color: #ff7043;">🎡 Strafraddrehen</button>
+
+<!-- 🎯 Popup für Rad -->
+<div id="wheelContainer" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.7); z-index: 9998; justify-content: center; align-items: center;">
+  <div style="position: relative; background: white; padding: 20px; border-radius: 20px; box-shadow: 0 0 20px black;">
+    <div style="position: relative;">
+      <!-- 🔺 Pfeil oben, zeigt nach unten (180 Grad gedreht optisch, aber oben angeordnet) -->
+      <div style="position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%) rotate(0deg); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 20px solid red; z-index: 1000;"></div>
+      <canvas id="wheelCanvas" width="800" height="800"></canvas>
+    </div>
+    <button onclick="spinWheel()" style="margin-top: 50px;">Drehen</button>
+    <button onclick="document.getElementById('wheelContainer').style.display='none'; music.pause();" style="margin-top: 10px; background-color: #ccc;">Close it</button>
+  </div>
+</div>
+
+<!-- 🎵 Musik während des Drehens -->
+<audio id="music" preload="auto" src="https://www.youtube.com/watch?v=n8IQeLNBp-Y"></audio>
+
+
+
+<script>
+  const wheelOptions = [
+    '10 Liegestütze',
+    'Runde aussetzen',
+    'Handyverbot 10 Min',
+    'Wurstwasser trinken',
+    'Chili essen',
+    '20 sit ups',
+    'nächste Runde kein Englisches Wort',
+    'Ein Lied vorsingen',
+    'opfer🎞️',
+    'kek💰'
+  ];
+  
+  let angle = 0;
+  let spinning = false;
+  const canvas = document.getElementById("wheelCanvas");
+  const ctx = canvas.getContext("2d");
+  const radius = canvas.width / 2;
+  const spinButton = document.getElementById("spinButton");
+  const music = document.getElementById("music");
+  
+  function drawWheel() {
+    const sliceAngle = 2 * Math.PI / wheelOptions.length;
+    for (let i = 0; i < wheelOptions.length; i++) {
+      const start = i * sliceAngle;
+      const end = start + sliceAngle;
+      ctx.beginPath();
+      ctx.moveTo(radius, radius);
+      ctx.arc(radius, radius, radius, start, end);
+      ctx.fillStyle = i % 2 === 0 ? "#ffcc80" : "#ffe0b2";
+      ctx.fill();
+      ctx.save();
+      ctx.translate(radius, radius);
+      ctx.rotate(start + sliceAngle / 2);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#000";
+      ctx.font = "22px Arial";
+      ctx.fillText(wheelOptions[i], radius - 10, 10);
+      ctx.restore();
+    }
+  }
+  
+  function spinWheel() {
+    if (spinning) return;
+    spinning = true;
+    let spinVelocity = Math.random() * 15 + 25; // Startgeschwindigkeit
+    const deceleration = 0.985; // Langsames Auslaufen → längere Animation
+  
+    // Musik abspielen beim Klick
+    music.currentTime = 0;
+    music.play().catch(e => console.warn("Autoplay blockiert", e));
+  
+    const animate = () => {
+      if (spinVelocity <= 0.1) {
+        spinning = false;
+        music.pause();
+        return;
+      }
+      angle += spinVelocity;
+      spinVelocity *= deceleration;
+  
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.translate(radius, radius);
+      ctx.rotate((angle * Math.PI) / 180);
+      ctx.translate(-radius, -radius);
+      drawWheel();
+      ctx.restore();
+  
+      requestAnimationFrame(animate);
+    };
+  
+    animate();
+  }
+  
+  spinButton.addEventListener("click", () => {
+    document.getElementById("wheelContainer").style.display = 'flex';
+    angle = 0;
+    drawWheel();
+  });
+  </script>
+
+
+
+
+
+
+</body>
+</html>
